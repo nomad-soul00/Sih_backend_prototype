@@ -126,7 +126,7 @@ const getPercentageContributionPerMetal = (Qi, relative_Wi) => {
 
 export const MheiComputation = (data, standard) => {
     const S1 = chooseStandard(standard);
-    const IdealValues = { As: 0.01, Pb: 0, Cr: 0, Cd: 0, Se: 0, Ni: 0, Mn: 0.1, Zn: 5, Cu: 0.05, Fe: 0, Hg: 0 }
+    const IdealValues = { As: 0.00, Pb: 0, Cr: 0, Cd: 0, Se: 0, Ni: 0, Mn: 0.1, Zn: 5, Cu: 0.05, Fe: 0, Hg: 0 }
 
     const Wi = calculateWi(S1);
 
