@@ -89,7 +89,7 @@ function getNEI(MPM, PNC) {
     let NEI = 0;
     for (const metal in PNC) {
         if (PNC[metal] === 'NEI') {
-            NEI += MPM[metal];
+             NEI += -Math.abs(MPM[metal]);
         }
     }
     return parseFloat((NEI).toFixed(2));
