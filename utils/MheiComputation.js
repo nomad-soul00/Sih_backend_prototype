@@ -1,7 +1,7 @@
 import { chooseStandard, calculateWi, getMetalLabelsFromContributions } from "./HmpiComputation.js";
 
 
-    function calculateNormalizedWeights(relativeWeights, metals) {
+function calculateNormalizedWeights(relativeWeights, metals) {
     if (typeof metals !== 'object' || metals === null) {
         throw new Error("`metals` must be a non-null object.");
     }
@@ -112,30 +112,30 @@ function getWaterQuality(NEI, PEI) {
 }
 
 const getPercentageContributionPerMetal = (Qi, relative_Wi) => {
-  const peiContributions = {};
+    const peiContributions = {};
 
-  let totalPEI = 0;
+    let totalPEI = 0;
 
-  // First calculate ωi * Qi for all metals
-  Object.keys(Qi).forEach((metal) => {
-    const wi = relative_Wi[metal];
-    const qi = Qi[metal];
+    // First calculate ωi * Qi for all metals
+    Object.keys(Qi).forEach((metal) => {
+        const wi = relative_Wi[metal];
+        const qi = Qi[metal];
 
-    if (wi != null && qi != null) {
-      const contribution = wi * qi;
-      peiContributions[metal] = contribution;
-      totalPEI += contribution;
-    }
-  });
+        if (wi != null && qi != null) {
+            const contribution = wi * qi;
+            peiContributions[metal] = contribution;
+            totalPEI += contribution;
+        }
+    });
 
-  // Now calculate percentage contribution
-  const percentageContributions = {};
-  Object.keys(peiContributions).forEach((metal) => {
-    const percentage = (peiContributions[metal] / totalPEI) * 100;
-    percentageContributions[metal] = +percentage.toFixed(2); // Rounded to 2 decimal places
-  });
+    // Now calculate percentage contribution
+    const percentageContributions = {};
+    Object.keys(peiContributions).forEach((metal) => {
+        const percentage = (peiContributions[metal] / totalPEI) * 100;
+        percentageContributions[metal] = +percentage.toFixed(2); // Rounded to 2 decimal places
+    });
 
-  return percentageContributions;
+    return percentageContributions;
 };
 
 
@@ -146,17 +146,21 @@ export const MheiComputation = (data, standard) => {
 
     const Wi = calculateWi(S1);
 
-   
+
 
 
     const processData = data.map((entry) => {
         const { Location, Latitude, Longitude, ...metals } = entry;
         const Qi = calculateQi(metals, S1, IdealValues);
+
+        const tempMheiPerMetal = calculateIndividualMHEIPerMetal(Qi, Wi); 
+        const relative_Wi = calculateNormalizedWeights(Wi, tempMheiPerMetal); 
+
         const MheiPerMetal = calculateIndividualMHEIPerMetal(Qi, relative_Wi);
 
         const concentrations = {};
         Object.keys(MheiPerMetal).forEach((metal) => {
-            concentrations[metal] = metals[metal] ?? null; // get input concentration or null if missing
+            concentrations[metal] = metals[metal] ?? null; 
         });
 
         const PEI_NEI_category = FilterMhei(concentrations, IdealValues);
@@ -165,7 +169,6 @@ export const MheiComputation = (data, standard) => {
         const readableMetalLabels = getMetalLabelsFromContributions(MheiPerMetal);
         const waterQuality = getWaterQuality(NEI, PEI);
         const percentageContributions = getPercentageContributionPerMetal(Qi, relative_Wi);
-         const relative_Wi = calculateNormalizedWeights(Wi, MheiPerMetal);
 
 
 
@@ -173,7 +176,7 @@ export const MheiComputation = (data, standard) => {
         return {
             location: Location,
             coordinates: { latitude: Latitude, longitude: Longitude },
-            Qi, Wi, relative_Wi, MheiPerMetal,percentageContributions, concentrations, PEI_NEI_category, PEI, NEI, Metals: readableMetalLabels, waterQuality
+            Qi, Wi, relative_Wi, MheiPerMetal, percentageContributions, concentrations, PEI_NEI_category, PEI, NEI, Metals: readableMetalLabels, waterQuality
         };
     })
 
