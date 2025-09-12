@@ -29,16 +29,16 @@ export const getMetalLabelsFromContributions = (metalContributions) => {
  export function chooseStandard(standard) {
     if (standard === "BIS") {
         return {
-            Pb: 0.05,
-            Cd: 0.01,
+            Pb: 0.01,
+            Cd: 0.003,
             Hg: 0.001,
             As: 0.05,
             Cr: 0.05,
-            Cu: 0.05,//
-            Zn: 5.0, //
+            Cu: 1.5,//
+            Zn: 15.0, //
             Ni: 0.02,
             Fe: 0.3,
-            Mn: 0.1,
+            Mn: 0.3,
             Se: 0.01
         };
     };
@@ -51,11 +51,11 @@ export const getMetalLabelsFromContributions = (metalContributions) => {
             As: 0.01,
             Cr: 0.05,
             Cu: 2.0,
-            Zn: 3.0,
+            Zn: 0.0,
             Ni: 0.07,
             Fe: 0.0,
-            Mn: 0.08,
-            Se: 0.04
+            Mn: 0.4,
+            Se: 0.01
         };
     }
 }
