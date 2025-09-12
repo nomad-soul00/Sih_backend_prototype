@@ -6,17 +6,8 @@ import { UploadData } from '../controllers/Process.controllers.js';
 
 const dataRouter = express.Router();
 
-// Multer storage config
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './uploads'); // Ensure this folder exists
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
+// ✅ Use memory storage instead of disk
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
   const ext = path.extname(file.originalname).toLowerCase();
@@ -33,16 +24,14 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Multer middleware
+// ✅ Multer with memoryStorage
 const upload = multer({
   storage,
-  fileFilter
+  fileFilter,
 });
 
-
+// ✅ These now use in-memory uploaded file
 dataRouter.post('/hmpi/upload', upload.single('uploadedFile'), UploadData);
-
 dataRouter.post('/mhei/upload', upload.single('uploadedFile'), UploadData);
-
 
 export default dataRouter;

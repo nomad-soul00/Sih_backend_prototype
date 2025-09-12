@@ -1,8 +1,5 @@
 import path from "path";
 import parse from "../config/ExcelParser.js";
-import fs from 'fs';
-
-
 
 export const UploadData = (req, res) => {
   try {
@@ -28,22 +25,8 @@ export const UploadData = (req, res) => {
       });
     }
 
-    const excelData = parse(file.path); 
-
-    // const parsedData = parse(file.path);
-
-    // let excelData = [];
-    // if (parsedData && Array.isArray(parsedData.Sheet1)) {
-    //   excelData = parsedData.Sheet1.length > 20 ? parsedData.Sheet1.slice(0, 20) : parsedData.Sheet1;
-    // } else {
-    //   excelData = [];
-    // }
-
-
-    // console.log(newXldata[12])
-
-
-
+    // ✅ Parse from buffer instead of file path
+    const excelData = parse(file.buffer); // <-- changed from file.path
 
     res.status(200).json({
       success: true,
@@ -51,15 +34,9 @@ export const UploadData = (req, res) => {
       data: {
         userName: req.body.userName,
         year: req.body.year,
-        filename: file.filename,
+        filename: file.originalname,
         parsData: excelData
       },
-
-    });
-
-    //deleting the file
-    fs.unlink(file.path, (err) => {
-      if (err) console.error('Error deleting file:', err);
     });
 
   } catch (error) {

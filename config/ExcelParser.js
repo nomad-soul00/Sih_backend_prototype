@@ -1,8 +1,10 @@
 import XLSX from 'xlsx';
 
-const Parse = (filename) => {
+const Parse = (buffer) => {
   try {
-    const workbook = XLSX.readFile(filename);
+    // ✅ Read from buffer instead of file path
+    const workbook = XLSX.read(buffer, { type: 'buffer' });
+
     const result = {};
 
     workbook.SheetNames.forEach(sheetName => {
@@ -28,7 +30,7 @@ const Parse = (filename) => {
     return result;
 
   } catch (error) {
-    console.error('Error parsing Excel file:', error);
+    console.error('Error parsing Excel buffer:', error);
     throw error;
   }
 };
