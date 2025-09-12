@@ -1,14 +1,30 @@
 import { chooseStandard, calculateWi, getMetalLabelsFromContributions } from "./HmpiComputation.js";
 
-function calculateRelativeWeights(Wi) {
-    const totalWeight = Object.values(Wi).reduce((acc, val) => acc + val, 0);
 
-    const relativeWeights = {};
-    for (const metal in Wi) {
-        relativeWeights[metal] = parseFloat((Wi[metal] / totalWeight).toFixed(7));
+    function calculateNormalizedWeights(relativeWeights, metals) {
+    if (typeof metals !== 'object' || metals === null) {
+        throw new Error("`metals` must be a non-null object.");
     }
 
-    return relativeWeights;
+    const selectedKeys = Object.keys(metals);
+
+    const filteredRW = {};
+    for (const metal of selectedKeys) {
+        if (relativeWeights[metal] !== undefined) {
+            filteredRW[metal] = relativeWeights[metal];
+        } else {
+            console.warn(`Metal '${metal}' not found in relativeWeights.`);
+        }
+    }
+
+    const total = Object.values(filteredRW).reduce((acc, val) => acc + val, 0);
+
+    const weights = {};
+    for (const metal in filteredRW) {
+        weights[metal] = parseFloat((filteredRW[metal] / total).toFixed(7));
+    }
+
+    return weights;
 }
 
 function calculateIndividualMHEIPerMetal(Qi, relativeWi) {
@@ -130,7 +146,7 @@ export const MheiComputation = (data, standard) => {
 
     const Wi = calculateWi(S1);
 
-    const relative_Wi = calculateRelativeWeights(Wi);
+   
 
 
     const processData = data.map((entry) => {
@@ -149,7 +165,7 @@ export const MheiComputation = (data, standard) => {
         const readableMetalLabels = getMetalLabelsFromContributions(MheiPerMetal);
         const waterQuality = getWaterQuality(NEI, PEI);
         const percentageContributions = getPercentageContributionPerMetal(Qi, relative_Wi);
-
+         const relative_Wi = calculateNormalizedWeights(Wi, MheiPerMetal);
 
 
 
