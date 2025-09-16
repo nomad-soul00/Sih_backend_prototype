@@ -89,26 +89,29 @@ function getNEI(MPM, PNC) {
     let NEI = 0;
     for (const metal in PNC) {
         if (PNC[metal] === 'NEI') {
-             NEI += -Math.abs(MPM[metal]);
+            NEI += -Math.abs(MPM[metal]);
         }
     }
     return parseFloat((NEI).toFixed(2));
 }
 
 function getWaterQuality(NEI, PEI) {
-    if (NEI >= -100 && NEI <= 0 && PEI === 0) {
-        return "Excellent";
-    } else if (NEI > -100 && NEI <= 0 && PEI > 0 && PEI <= 50) {
-        return "Good";
-    } else if (NEI > -100 && NEI <= 0 && PEI > 50 && PEI <= 100) {
-        return "Moderate";
-    } else if (NEI > -100 && NEI <= 0 && PEI > 100) {
-        return "Poor";
-    } else if (NEI === 0 && PEI > 100) {
-        return "Unsuitable";
-    } else {
-        return "Invalid values or no classification available";
+    if (NEI >= -100 && NEI <= 0) {
+        if (PEI === 0) {
+            return "Excellent";
+        } else if (PEI > 0 && PEI <= 50) {
+            return "Good";
+        } else if (PEI > 50 && PEI <= 100) {
+            return "Moderate";
+        } else if (NEI === 0 && PEI > 100) {
+            return "Unsuitable";
+        } else if (PEI > 100) {
+            return "Poor";
+        }
     }
+
+    return "Invalid values or no classification available";
+
 }
 
 const getPercentageContributionPerMetal = (Qi, relative_Wi) => {
@@ -153,14 +156,14 @@ export const MheiComputation = (data, standard) => {
         const { Location, Latitude, Longitude, ...metals } = entry;
         const Qi = calculateQi(metals, S1, IdealValues);
 
-        const tempMheiPerMetal = calculateIndividualMHEIPerMetal(Qi, Wi); 
-        const relative_Wi = calculateNormalizedWeights(Wi, tempMheiPerMetal); 
+        const tempMheiPerMetal = calculateIndividualMHEIPerMetal(Qi, Wi);
+        const relative_Wi = calculateNormalizedWeights(Wi, tempMheiPerMetal);
 
         const MheiPerMetal = calculateIndividualMHEIPerMetal(Qi, relative_Wi);
 
         const concentrations = {};
         Object.keys(MheiPerMetal).forEach((metal) => {
-            concentrations[metal] = metals[metal] ?? null; 
+            concentrations[metal] = metals[metal] ?? null;
         });
 
         const PEI_NEI_category = FilterMhei(concentrations, IdealValues);
