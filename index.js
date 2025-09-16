@@ -12,7 +12,14 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 
-app.use(cors());
+const allowedOrigins = ['https://sih-fronted-prototype.vercel.app'];
+
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.resolve('public')));
