@@ -6,7 +6,7 @@ export const MheiComputationController = (req,res)=>{
      
     
         let frontEndData = MheiComputation(data,standard);
-        // console.log(frontEndData);
+        // console.log(frontEndData.processData);
 
         res.status(200).json(frontEndData);
 }

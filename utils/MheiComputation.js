@@ -96,19 +96,28 @@ function getNEI(MPM, PNC) {
 }
 
 function getWaterQuality(NEI, PEI) {
-    if (NEI >= -100 && NEI <= 0) {
-        if (PEI === 0) {
-            return "Excellent";
-        } else if (PEI > 0 && PEI <= 50) {
-            return "Good";
-        } else if (PEI > 50 && PEI <= 100) {
-            return "Moderate";
-        } else if (NEI === 0 && PEI > 100) {
-            return "Unsuitable";
-        } else if (PEI > 100) {
-            return "Poor";
-        }
+    
+    if (NEI < -100 || NEI > 0) {
+        return "Invalid NEI value";
     }
+
+    if (NEI === 0 && PEI > 100) {
+        return "Unsuitable";
+    }
+
+    if (PEI === 0) {
+        return "Excellent";
+    }
+
+    if (PEI > 0 && PEI <= 50) {
+        return "Good";
+    } else if (PEI > 50 && PEI <= 100) {
+        return "Moderate";
+    } else if (PEI > 100) {
+        return "Poor";
+    }
+
+    return "Unknown";
 
     return "Invalid values or no classification available";
 

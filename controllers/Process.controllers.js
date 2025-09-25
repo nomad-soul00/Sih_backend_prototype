@@ -4,8 +4,8 @@ import parse from "../config/ExcelParser.js";
 export const UploadData = (req, res) => {
   try {
     const file = req.file;
-    console.log("Received file:", req.file);
-  console.log("Received body:", req.body);
+  //   console.log("Received file:", req.file);
+  // console.log("Received body:", req.body);
 
     // Check if file is present
     if (!file) {
